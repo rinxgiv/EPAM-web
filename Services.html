@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>EPAM — Services</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Space+Grotesk:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="shared.css">
+  <style>
+    .page-hero {
+      padding: 80px 0 100px;
+      border-bottom: 1px solid var(--line);
+    }
+    .page-hero h1 {
+      font-family: var(--display);
+      font-size: clamp(56px, 8vw, 128px);
+      line-height: 0.95;
+      letter-spacing: -0.035em;
+      font-weight: 400;
+      max-width: 18ch;
+      text-wrap: balance;
+      margin: 40px 0 32px;
+    }
+    .page-hero h1 .hl { color: var(--accent); text-shadow: 0 0 30px var(--accent-glow); }
+    .page-hero .lede { color: var(--fg-dim); max-width: 64ch; font-size: 15px; line-height: 1.7; }
+
+    .svc-index {
+      padding: 40px 0 140px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    /* Detail cards */
+    .svc-detail {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 60px;
+      padding: 80px 0;
+      border-top: 1px solid var(--line);
+    }
+    .svc-detail:first-of-type { border-top: none; }
+    .svc-detail .sidebar .idx {
+      font-family: var(--display);
+      font-size: clamp(64px, 8vw, 120px);
+      color: var(--accent);
+      line-height: 0.9;
+      letter-spacing: -0.03em;
+      text-shadow: 0 0 28px var(--accent-glow);
+    }
+    .svc-detail .sidebar .label {
+      font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--fg-dim); margin-top: 18px;
+    }
+    .svc-detail .sidebar .status {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--accent);
+      margin-top: 24px;
+    }
+    .svc-detail .sidebar .status::before {
+      content: ""; width: 6px; height: 6px; background: var(--accent); border-radius: 50%;
+      box-shadow: 0 0 8px var(--accent-glow);
+    }
+    .svc-detail h2 {
+      font-family: var(--display);
+      font-size: clamp(32px, 3.4vw, 52px);
+      line-height: 1.05; letter-spacing: -0.02em; font-weight: 400;
+      margin-bottom: 20px;
+      text-wrap: balance;
+    }
+    .svc-detail .body {
+      color: var(--fg-dim); font-size: 14px; line-height: 1.8; max-width: 64ch;
+    }
+    .svc-detail .body p + p { margin-top: 14px; }
+
+    .svc-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+      margin-top: 40px;
+      border-top: 1px solid var(--line);
+      border-left: 1px solid var(--line);
+    }
+    .svc-grid > div {
+      padding: 24px;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+    .svc-grid .k {
+      font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--fg-mute); margin-bottom: 12px;
+    }
+    .svc-grid .v { font-size: 13px; color: var(--fg); line-height: 1.6; }
+    .svc-grid .v ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; color: var(--fg-dim); }
+    .svc-grid .v ul li::before { content: "→ "; color: var(--accent); }
+
+    .svc-detail .image {
+      margin-top: 32px;
+      height: 240px;
+    }
+
+    .svc-anchor {
+      display: flex; gap: 12px; flex-wrap: wrap;
+      padding: 20px 0 60px;
+      border-bottom: 1px solid var(--line);
+    }
+    .svc-anchor a {
+      padding: 10px 16px;
+      border: 1px solid var(--line-strong);
+      font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--fg-dim);
+      display: inline-flex; gap: 10px; align-items: center;
+      transition: all 0.2s;
+    }
+    .svc-anchor a:hover { border-color: var(--accent); color: var(--accent); box-shadow: var(--glow); }
+    .svc-anchor a .n { color: var(--accent); }
+
+    .crumbs {
+      font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--fg-dim);
+    }
+    .crumbs a:hover { color: var(--accent); }
+    .crumbs .sep { color: var(--fg-mute); margin: 0 10px; }
+
+    .cta {
+      padding: 140px 0;
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+    }
+    .cta::before {
+      content: ""; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at center, var(--accent-glow), transparent 65%);
+      opacity: 0.35; filter: blur(20px); pointer-events: none;
+    }
+    .cta h2 {
+      font-family: var(--display);
+      font-size: clamp(44px, 6vw, 96px);
+      line-height: 1; letter-spacing: -0.03em; font-weight: 400;
+      margin-bottom: 24px; position: relative;
+    }
+    .cta h2 .hl { color: var(--accent); text-shadow: 0 0 30px var(--accent-glow); }
+    .cta .actions { display: inline-flex; gap: 16px; position: relative; }
+
+    @media (max-width: 1000px) {
+      .svc-detail { grid-template-columns: 1fr; gap: 32px; }
+      .svc-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+      .page-hero { padding: 48px 0 64px; }
+      .page-hero h1 { font-size: clamp(40px, 10vw, 72px); margin: 24px 0 20px; }
+      .page-hero .lede { font-size: 14px; }
+      .svc-anchor { gap: 8px; padding: 16px 0 40px; }
+      .svc-anchor a { padding: 8px 12px; font-size: 10px; }
+      .svc-index { padding: 32px 0 80px; }
+      .svc-detail { padding: 48px 0; }
+      .svc-detail .sidebar .idx { font-size: clamp(48px, 12vw, 80px); }
+      .cta { padding: 80px 0; }
+      .cta .actions { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+      .cta .actions .btn { width: 100%; max-width: 380px; justify-content: center; }
+    }
+    @media (max-width: 480px) {
+      .page-hero h1 { font-size: clamp(32px, 10vw, 48px); }
+      .svc-detail { padding: 36px 0; }
+      .svc-grid > div { padding: 16px; }
+      .crumbs { font-size: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 122.44 121.28" xmlns="http://www.w3.org/2000/svg">
+              <g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+                <polyline class="primary" points="2 60.64 2 119.28 2 2"/>
+                <ellipse class="primary" cx="61.38" cy="60.64" rx="59.06" ry="58.64"/>
+                <line class="primary" x1="2.32" y1="60.64" x2="120.44" y2="60.64"/>
+                <polyline class="primary" points="2.32 2 60.43 59.7 120.44 119.28 120.44 2"/>
+                <line class="primary" x1="120.44" y1="2" x2="61.38" y2="60.64"/>
+              </g>
+            </svg>
+      </span>
+      <span>EPAM</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="Services.html" class="active">Services</a>
+      <a href="index.html#about">About</a>
+      <a href="index.html#cases">Careers</a>
+      <a href="index.html#cta">Contact</a>
+    </div>
+    <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <a href="#cta" class="nav-cta">
+      <span data-clock>00:00:00 UTC</span>
+      <span>→ Book a call</span>
+    </a>
+  </div>
+</nav>
+
+<main>
+  <section class="page-hero">
+    <div class="container">
+      <div class="crumbs">
+        <a href="index.html">/ index</a><span class="sep">·</span>
+        <a href="Services.html">/ services</a>
+      </div>
+      <h1>Six practices. <span class="hl">One team</span> on the ground for every engagement.</h1>
+      <p class="lede">We're organized around the shape of problems, not the shape of a sales deck. Every practice below runs as a multi-disciplinary squad with a named engineering lead, a delivery manager, and direct-line access to the domain partners behind the work.</p>
+
+      <div class="svc-anchor">
+        <a href="#cloud"><span class="n">001</span> cloud-engineering</a>
+        <a href="#ai"><span class="n">002</span> ai-and-ml</a>
+        <a href="#data"><span class="n">003</span> data-platforms</a>
+        <a href="#product"><span class="n">004</span> product-engineering</a>
+        <a href="#exp"><span class="n">005</span> experience-design</a>
+        <a href="#sec"><span class="n">006</span> security-and-compliance</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="svc-index">
+    <div class="container">
+
+      <!-- 001 -->
+      <article class="svc-detail" id="cloud">
+        <div class="sidebar">
+          <div class="idx">001</div>
+          <div class="label">/ cloud-engineering</div>
+          <div class="status">Active · 84 engagements</div>
+        </div>
+        <div>
+          <h2>Platform engineering that pays for itself in the first quarter.</h2>
+          <div class="body">
+            <p>We design and operate cloud platforms the way product teams design and operate products: with a clear user, a golden path, and a feedback loop between the infrastructure and the software it carries. Landing zones come with paved roads. FinOps is wired in at day one. Observability is a first-class citizen.</p>
+            <p>Typical engagements range from six-week foundation sprints through multi-year co-operating relationships. We hand the keys back when the platform stands on its own.</p>
+          </div>
+
+          <div class="svc-grid">
+            <div>
+              <div class="k">/ stack</div>
+              <div class="v"><ul><li>AWS · Azure · GCP · OCI</li><li>Kubernetes · Nomad · ECS</li><li>Terraform · Crossplane · Pulumi</li></ul></div>
+            </div>
+            <div>
+              <div class="k">/ deliverables</div>
+              <div class="v"><ul><li>Paved-road reference architecture</li><li>Golden-path developer portal</li><li>Run-book + on-call enablement</li></ul></div>
+            </div>
+            <div>
+              <div class="k">/ engagement</div>
+              <div class="v">6-week foundation → multi-quarter co-op → handover</div>
+            </div>
+            <div>
+              <div class="k">/ team shape</div>
+              <div class="v">Staff engineer · 2 platform eng · SRE · FinOps lead</div>
+            </div>
+          </div>
+
+          <div class="placeholder image accent" data-label="Platform topology diagram"></div>
+        </div>
+      </article>
+
+      <!-- 002 -->
+      <article class="svc-detail" id="ai">
+        <div class="sidebar">
+          <div class="idx">002</div>
+          <div class="label">/ ai-and-ml</div>
+          <div class="status">Active · 61 engagements</div>
+        </div>
+        <div>
+          <h2>Applied intelligence — past the demo, into production.</h2>
+          <div class="body">
+            <p>The gap between a working prototype and a system a regulated enterprise can deploy is measured in months of evaluation, guardrails, and observability. We close that gap. Our MLOps practice builds the harness around the model: eval sets, drift monitoring, red-team pipelines, and the operational muscle to iterate.</p>
+            <p>From retrieval-augmented systems to multi-agent workflows to on-prem fine-tuning, the target is the same: measurable business value with a number next to it.</p>
+          </div>
+
+          <div class="svc-grid">
+            <div>
+              <div class="k">/ stack</div>
+              <div class="v"><ul><li>PyTorch · JAX · Ray</li><li>LangChain · LlamaIndex · DSPy</li><li>vLLM · Triton · NVIDIA NIM</li></ul></div>
+            </div>
+            <div>
+              <div class="k">/ deliverables</div>
+              <div class="v"><ul><li>Eval harness with versioned test sets</li><li>RAG / agent reference implementation</li><li>Model governance + red-team protocol</li></ul></div>
+            </div>
+            <div>
+              <div class="k">/ engagement</div>
+              <div class="v">10-week discovery → pilot → production rollout</div>
+            </div>
+            <div>
+              <div class="k">/ team shape</div>
+              <div class="v">ML staff · Eval engineer · App eng · Product lead</div>
+            </div>
+          </div>
+
+          <div class="placeholder image" data-label="Eval harness screenshot"></div>
+        </div>
+      </article>
+
+      <!-- 003 -->
+      <article class="svc-detail" id="data">
+        <div class="sidebar">
+          <div class="idx">003</div>
+          <div class="label">/ data-platforms</div>
+          <div class="status">Active · 49 engagements</div>
+        </div>
+        <div>
+          <h2>Lakehouses, streams, and contracts your data teams actually want to use.</h2>
+          <div class="body">
+            <p>We treat data as a product. That means schemas with owners, SLAs with teeth, and a contract between producers and consumers that survives the next reorg. Whether the workload is batch analytics, real-time decisioning, or the retrieval layer underneath a gen-AI system, the foundations are the same.</p>
+          </div>
+
+          <div class="svc-grid">
+            <div>
+              <div class="k">/ stack</div>
+              <div class="v"><ul><li>Databricks · Snowflake · BigQuery</li><li>Kafka · Flink · Iceberg · Hudi</li><li>dbt · Airflow · Dagster</li></ul></div>
+            </div>
+            <div>
+              <div class="k">/ deliverables</div>
+              <div class="v"><ul><li>Federated lakehouse reference</li><li>Data contracts + catalog</li><li>Streaming inference pipeline</li></ul></div>
+            </div>
+            <div>
+              <div class="k">/ engagement</div>
+              <div class="v">8-week foundation → quarterly sprints</div>
+            </div>
+            <div>
+              <div class="k">/ team shape</div>
+              <div class="v">Data staff · 2 platform · Analytics eng · Governance</div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 004 -->
+      <article class="svc-detail" id="product">
+        <div class="sidebar">
+          <div class="idx">004</div>
+          <div class="label">/ product-engineering</div>
+          <div class="status">Active · 112 engagements</div>
+        </div>
+        <div>
+          <h2>Dedicated squads. Real code review. Friday deploys.</h2>
+          <div class="body">
+            <p>Our product engineering squads are embedded long-term. They own their code paths, run their own on-call, and ship to production with the same cadence your best internal teams do. This is the largest of our practices and the one that most often carries a client from founding stage through IPO-scale.</p>
+          </div>
+
+          <div class="svc-grid">
+            <div>
+              <div class="k">/ stack</div>
+              <div class="v"><ul><li>TypeScript · Go · Rust · Kotlin</li><li>React · Next · Svelte · Remix</li><li>Postgres · Temporal · Redis</li></ul></div>
+            </div>
+            <div>
+              <div class="k">/ deliverables</div>
+              <div class="v"><ul><li>Working software, shipped weekly</li><li>Embedded team, named engineers</li><li>Design system + component library</li></ul></div>
+            </div>
+            <div>
+              <div class="k">/ engagement</div>
+              <div class="v">Quarterly squad commitment · renewable</div>
+            </div>
+            <div>
+              <div class="k">/ team shape</div>
+              <div class="v">TL · 3-6 engineers · PM · Designer · QA</div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 005 -->
+      <article class="svc-detail" id="exp">
+        <div class="sidebar">
+          <div class="idx">005</div>
+          <div class="label">/ experience-design</div>
+          <div class="status">Active · 38 engagements</div>
+        </div>
+        <div>
+          <h2>Research, systems, and surfaces that scale across brands and regions.</h2>
+          <div class="body">
+            <p>Our design practice is tightly coupled to engineering. Systems are delivered as code, not as Figma handoffs. Research feeds directly into the backlog. Every screen ships with the component, the test, and the documentation in the same pull request.</p>
+          </div>
+
+          <div class="svc-grid">
+            <div>
+              <div class="k">/ stack</div>
+              <div class="v"><ul><li>Figma · Tokens Studio · Storybook</li><li>Maze · Dovetail · UserTesting</li><li>Radix · Ariakit · Stitches</li></ul></div>
+            </div>
+            <div>
+              <div class="k">/ deliverables</div>
+              <div class="v"><ul><li>Multi-brand design system</li><li>Research repository + insight ops</li><li>Accessibility audit (WCAG 2.2 AA)</li></ul></div>
+            </div>
+            <div>
+              <div class="k">/ engagement</div>
+              <div class="v">Discovery sprint · systems build · co-op</div>
+            </div>
+            <div>
+              <div class="k">/ team shape</div>
+              <div class="v">Principal designer · Researcher · Systems eng</div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 006 -->
+      <article class="svc-detail" id="sec">
+        <div class="sidebar">
+          <div class="idx">006</div>
+          <div class="label">/ security-and-compliance</div>
+          <div class="status">Active · 24 engagements</div>
+        </div>
+        <div>
+          <h2>Zero-trust runtime, not a PDF of policies.</h2>
+          <div class="body">
+            <p>Security, for us, is an engineering discipline. We build zero-trust runtimes, SBOM-driven supply chain, and threat models that get reviewed with every release. Our compliance work targets real attestations — SOC 2 Type II, ISO 27001, HIPAA, PCI-DSS, FedRAMP Moderate — with evidence automation built in.</p>
+          </div>
+
+          <div class="svc-grid">
+            <div>
+              <div class="k">/ stack</div>
+              <div class="v"><ul><li>SPIFFE / SPIRE · OPA · Kyverno</li><li>Vault · Teleport · Boundary</li><li>Sigstore · SLSA L3 · CycloneDX</li></ul></div>
+            </div>
+            <div>
+              <div class="k">/ deliverables</div>
+              <div class="v"><ul><li>Zero-trust reference architecture</li><li>Supply-chain hardening + SBOM</li><li>Audit evidence automation</li></ul></div>
+            </div>
+            <div>
+              <div class="k">/ engagement</div>
+              <div class="v">Threat model sprint → continuous assurance</div>
+            </div>
+            <div>
+              <div class="k">/ team shape</div>
+              <div class="v">Security architect · AppSec · GRC · Detection eng</div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <section class="cta" id="cta">
+    <div class="container">
+      <h2>Pick a practice.<br>Start a <span class="hl">conversation.</span></h2>
+      <div class="actions">
+        <a href="mailto:hello@epam.example" class="btn">hello@epam.example <span class="arrow">→</span></a>
+        <a href="Case.html" class="btn ghost">See a case study</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-bottom" style="border: none; padding-top: 0;">
+      <span>© 2026 · Original design · Not affiliated with EPAM Systems</span>
+      <span>v / 26.04 · build 01a2f7</span>
+    </div>
+  </div>
+</footer>
+
+<aside class="tweaks-panel" id="tweaks-panel">
+  <div class="tp-title"><span>Tweaks</span><span>●</span></div>
+  <div class="tp-row">
+    <span>Accent</span>
+    <span class="tp-pill" data-tweak-accent>
+      <button data-value="cyan">Cyan</button>
+      <button data-value="burgundy">Burgundy</button>
+    </span>
+  </div>
+</aside>
+
+<script src="shared.js"></script>
+</body>
+</html>
