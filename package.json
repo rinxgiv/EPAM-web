@@ -1,7 +1,7 @@
 {
   "name": "Grafika",
   "version": "1.0.0",
-  "description": "",
+  "description": "EPAM — a dependency-free, multi-page static marketing site (HTML/CSS/vanilla JS) with a shared design system and runtime accent theming.",
   "main": "shared.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
